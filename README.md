@@ -22,18 +22,40 @@ A modern, responsive portfolio website showcasing **Software Development**, **Vi
 ## 📂 Project Structure
 
 ```text
-project-folder/
+korir-digital/
+│── index.html
+│── dev.html
+│── vet.html
+│── restaurant.html
+│── travel.html
+│── inventory.html
+│── README.md
+│── LICENSE
+│── .gitignore
 │
-├── index.html          # Main homepage
-├── dev.html            # Skills page
-├── vet.html            # Veterinary website demo
-├── restaurant.html     # Restaurant website demo
-├── travel.html         # Travel planner demo
-├── inventory.html      # E-commerce store demo
+├── assets/
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── dev.css
+│   │   └── pages.css
+│   │
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── navigation.js
+│   │   └── form.js
+│   │
+│   ├── images/
+│   │   ├── Emmanuel.jpg
+│   │   ├── logo.png
+│   │   └── ...
+│   │
+│   └── icons/
 │
-├── Emmanuel.jpg        # Profile image
-│
-└── README.md
+└── screenshots/
+    ├── homepage.png
+    ├── services.png
+    ├── portfolio.png
+    └── contact.png
 ```
 
 ---
