@@ -5,6 +5,18 @@ const app = express();
 const publicDirectory = path.join(__dirname, "public");
 
 app.use(express.json());
+
+// The publishable key is designed for browser use. Never expose a Supabase
+// service-role key here; database access is protected by the RLS policies.
+app.get("/api/config", (req, res) => {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
+    if (!url || !key) {
+        return res.status(503).json({ error: "Supabase has not been configured." });
+    }
+    res.json({ supabaseUrl: url, supabasePublishableKey: key });
+});
+
 app.use(express.static(publicDirectory));
 
 app.get("/", (req, res) => {

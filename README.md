@@ -177,14 +177,18 @@ npm install
 
 ## Configure environment variables
 
-Create a `.env.local` file and add your credentials:
+### Supabase setup
+
+1. Create a project in [Supabase](https://supabase.com/dashboard).
+2. In **SQL Editor**, run [`supabase/schema.sql`](supabase/schema.sql).
+3. In **Authentication → URL Configuration**, set the Site URL to your Vercel URL and add that URL to Redirect URLs.
+4. Copy `.env.example` to `.env.local` and add the project URL plus its publishable key. Do not use a service-role key in this app.
+
+For Vercel, add the same values in **Project Settings → Environment Variables** for Production, Preview, and Development, then redeploy.
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-DATABASE_URL=
-OPENAI_API_KEY=
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
 ```
 
 ## Start the development server
@@ -196,7 +200,7 @@ npm run dev
 Open your browser and visit:
 
 ```text
-http://localhost:3000
+http://localhost:5000
 ```
 
 ---

@@ -4,45 +4,47 @@
  *  ============================================================
  */
 const Store = (() => {
-    const ACCOUNTS_STORAGE_KEY = 'korir_accounts_v1';
-    const PROJECTS_STORAGE_PREFIX = 'korir_projects_v1_';
-    const LEGACY_PROJECTS_STORAGE_KEY = 'korir_projects';
-    const AUTH_STORAGE_KEY = 'korir_auth';
-
     const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
-    const projectsStorageKey = (user) => PROJECTS_STORAGE_PREFIX + encodeURIComponent(user.id);
+    let supabaseClient = null;
 
-    const loadAccountsFromStorage = () => {
-        try {
-            const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
-            const data = raw && JSON.parse(raw);
-            return Array.isArray(data) ? data : [];
-        } catch (_) {
-            return [];
+    const userFromAuth = (authUser) => {
+        const metadata = authUser?.user_metadata || {};
+        const name = metadata.name || authUser?.email?.split('@')[0] || 'User';
+        return {
+            id: authUser.id,
+            name,
+            email: authUser.email,
+            avatar: metadata.avatar || name.charAt(0).toUpperCase(),
+            role: 'user',
+            ...metadata
+        };
+    };
+
+    const projectFromRow = (row) => ({
+        ...(row.project || {}),
+        id: row.id,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+    });
+
+    const projectPayload = (project) => {
+        const { id, createdAt, updatedAt, ...payload } = project;
+        return payload;
+    };
+
+    const getClient = () => {
+        if (!supabaseClient) throw new Error('Supabase is not configured. Please contact the site administrator.');
+        return supabaseClient;
+    };
+
+    const initializeSupabase = async () => {
+        const response = await fetch('/api/config');
+        const config = await response.json();
+        if (!response.ok || !config.supabaseUrl || !config.supabasePublishableKey) {
+            throw new Error(config.error || 'Supabase is not configured.');
         }
-    };
-
-    const saveAccountsToStorage = (accounts) => {
-        try { localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts)); } catch (_) {}
-    };
-
-    const loadProjectsFromStorage = (user) => {
-        if (!user || !user.id) return [];
-        try {
-            const raw = localStorage.getItem(projectsStorageKey(user));
-            if (raw) {
-                const data = JSON.parse(raw);
-                if (Array.isArray(data)) return data;
-            }
-        } catch (_) {}
-        return [];
-    };
-
-    const saveProjectsToStorage = (user, projects) => {
-        if (!user || !user.id) return;
-        try {
-            localStorage.setItem(projectsStorageKey(user), JSON.stringify(projects));
-        } catch (_) {}
+        if (!window.supabase?.createClient) throw new Error('Unable to load the authentication service.');
+        supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey);
     };
 
     let state = {
@@ -82,9 +84,6 @@ const Store = (() => {
         }
         if (updates._ui) {
             state._ui = { ...state._ui, ...updates._ui };
-        }
-        if (updates.projects !== undefined) {
-            saveProjectsToStorage(state.user, state.projects);
         }
         notify(prev, state);
     };
@@ -155,36 +154,23 @@ const Store = (() => {
         async login(email, password) {
             setState({ loading: true, _ui: { ...state._ui, authError: '' } });
             try {
-                await delay(700);
                 const normalizedEmail = normalizeEmail(email);
                 if (!normalizedEmail || !password) throw new Error('Email and password required');
-                let account = loadAccountsFromStorage().find(item => item.email === normalizedEmail);
-                if (!account) throw new Error('No account found for this email. Please sign up first.');
-                // Accounts migrated from the earlier demo did not have a saved password.
-                // Their first subsequent login securely establishes one for future logins.
-                if (account.password === null) {
-                    if (password.length < 4) throw new Error('Password must be at least 4 characters');
-                    const accounts = loadAccountsFromStorage().map(item =>
-                        item.id === account.id ? { ...item, password } : item
-                    );
-                    saveAccountsToStorage(accounts);
-                    account = { ...account, password };
-                } else if (account.password !== password) {
-                    throw new Error('Incorrect email or password');
-                }
-                const { password: _password, ...user } = account;
-                const token = 'jwt_' + btoa(JSON.stringify({ email, exp: Date.now() + 86400000 }));
-                const storedProjects = loadProjectsFromStorage(user);
+                const { data, error } = await getClient().auth.signInWithPassword({
+                    email: normalizedEmail,
+                    password
+                });
+                if (error) throw error;
+                const user = userFromAuth(data.user);
                 setState({
                     user,
-                    token,
+                    token: data.session?.access_token || null,
                     isAuthenticated: true,
                     loading: false,
-                    projects: storedProjects,
+                    projects: [],
                     _ui: { ...state._ui, authError: '', profileEditMode: false }
                 });
-                try { localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user, token })); } catch (_) {}
-                await actions.refreshDashboard();
+                await actions.fetchProjects();
                 return { success: true, user };
             } catch (err) {
                 setState({ loading: false, _ui: { ...state._ui, authError: err.message } });
@@ -195,36 +181,32 @@ const Store = (() => {
         async register(name, email, password) {
             setState({ loading: true, _ui: { ...state._ui, authError: '' } });
             try {
-                await delay(700);
                 const normalizedEmail = normalizeEmail(email);
                 if (!name || !normalizedEmail || !password) throw new Error('All fields required');
-                if (password.length < 4) throw new Error('Password must be at least 4 characters');
-                const accounts = loadAccountsFromStorage();
-                if (accounts.some(account => account.email === normalizedEmail)) {
-                    throw new Error('An account already exists for this email. Please log in.');
-                }
-                const user = {
-                    id: 'usr_' + Date.now(),
-                    name,
+                if (password.length < 6) throw new Error('Password must be at least 6 characters');
+                const { data, error } = await getClient().auth.signUp({
                     email: normalizedEmail,
-                    role: 'user',
-                    avatar: name.charAt(0).toUpperCase()
-                };
-                const account = { ...user, password };
-                saveAccountsToStorage([...accounts, account]);
-                const token = 'jwt_' + btoa(JSON.stringify({ email: normalizedEmail, exp: Date.now() + 86400000 }));
-                const emptyProjects = [];
-                saveProjectsToStorage(user, emptyProjects);
+                    password,
+                    options: {
+                        data: { name, avatar: name.charAt(0).toUpperCase() },
+                        emailRedirectTo: window.location.origin
+                    }
+                });
+                if (error) throw error;
+                if (!data.session) {
+                    setState({ loading: false });
+                    return { success: true, requiresEmailConfirmation: true };
+                }
+                const user = userFromAuth(data.user);
                 setState({
                     user,
-                    token,
+                    token: data.session.access_token,
                     isAuthenticated: true,
                     loading: false,
-                    projects: emptyProjects,
+                    projects: [],
                     _ui: { ...state._ui, authError: '', profileEditMode: false }
                 });
-                try { localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user, token })); } catch (_) {}
-                await actions.refreshDashboard();
+                await actions.fetchProjects();
                 return { success: true, user };
             } catch (err) {
                 setState({ loading: false, _ui: { ...state._ui, authError: err.message } });
@@ -232,7 +214,8 @@ const Store = (() => {
             }
         },
 
-        logout() {
+        async logout() {
+            try { await getClient().auth.signOut(); } catch (_) {}
             setState({
                 user: null,
                 token: null,
@@ -248,52 +231,43 @@ const Store = (() => {
                 },
                 _ui: { ...state._ui, profileEditMode: false }
             });
-            try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch (_) {}
             return { success: true };
         },
 
-        loadAuth() {
+        async loadAuth() {
             try {
-                const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-                if (raw) {
-                    const data = JSON.parse(raw);
-                    if (data.user && data.token) {
-                        const accounts = loadAccountsFromStorage();
-                        let account = accounts.find(item => item.id === data.user.id || item.email === normalizeEmail(data.user.email));
-
-                        // Preserve sessions and projects created by the previous single-account version.
-                        if (!account) {
-                            account = { ...data.user, email: normalizeEmail(data.user.email), password: null };
-                            saveAccountsToStorage([...accounts, account]);
-                            const legacyProjects = (() => {
-                                try {
-                                    const legacy = JSON.parse(localStorage.getItem(LEGACY_PROJECTS_STORAGE_KEY));
-                                    return Array.isArray(legacy) ? legacy : [];
-                                } catch (_) { return []; }
-                            })();
-                            saveProjectsToStorage(account, legacyProjects);
-                        }
-                        const { password: _password, ...user } = account;
-                        const storedProjects = loadProjectsFromStorage(user);
-                        setState({
-                            user,
-                            token: data.token,
-                            isAuthenticated: true,
-                            projects: storedProjects
-                        });
-                        setTimeout(() => {
-                            actions.refreshDashboard();
-                        }, 100);
-                        return true;
-                    }
-                }
-            } catch (_) {}
+                const { data, error } = await getClient().auth.getSession();
+                if (error) throw error;
+                if (!data.session?.user) return false;
+                setState({
+                    user: userFromAuth(data.session.user),
+                    token: data.session.access_token,
+                    isAuthenticated: true,
+                    projects: []
+                });
+                await actions.fetchProjects();
+                return true;
+            } catch (error) {
+                console.warn('Unable to restore session:', error.message);
+            }
             return false;
         },
 
         async fetchProjects() {
-            setState({ loading: false });
-            return state.projects;
+            try {
+                const { data, error } = await getClient()
+                    .from('projects')
+                    .select('id, project, created_at, updated_at')
+                    .order('updated_at', { ascending: false });
+                if (error) throw error;
+                const projects = (data || []).map(projectFromRow);
+                setState({ projects, loading: false });
+                await actions.refreshDashboard();
+                return projects;
+            } catch (err) {
+                setState({ loading: false });
+                throw err;
+            }
         },
 
         async refreshDashboard() {
@@ -321,11 +295,16 @@ const Store = (() => {
                     budget: typeof project.budget === 'number' ? project.budget :
                         (project.budget ? parseFloat(project.budget) : undefined)
                 };
-                const current = state.projects || [];
-                const updated = [newProj, ...current];
-                setState({ projects: updated });
+                const { data, error } = await getClient()
+                    .from('projects')
+                    .insert({ project: projectPayload(newProj) })
+                    .select('id, project, created_at, updated_at')
+                    .single();
+                if (error) throw error;
+                const savedProject = projectFromRow(data);
+                setState({ projects: [savedProject, ...(state.projects || [])] });
                 await actions.refreshDashboard();
-                return { success: true, project: newProj };
+                return { success: true, project: savedProject };
             } catch (err) {
                 return { success: false, error: err.message };
             }
@@ -334,14 +313,23 @@ const Store = (() => {
         async updateProjectStatus(id, status) {
             try {
                 await delay(250);
-                const projects = (state.projects || []).map(p =>
-                    p.id === id ? {
-                        ...p,
-                        status,
-                        progress: status === 'completed' ? 100 : p.progress,
-                        updatedAt: new Date().toISOString()
-                    } : p
-                );
+                const currentProject = (state.projects || []).find(project => project.id === id);
+                if (!currentProject) throw new Error('Project not found');
+                const updatedProject = {
+                    ...currentProject,
+                    status,
+                    progress: status === 'completed' ? 100 : currentProject.progress,
+                    updatedAt: new Date().toISOString()
+                };
+                const { data, error } = await getClient()
+                    .from('projects')
+                    .update({ project: projectPayload(updatedProject) })
+                    .eq('id', id)
+                    .select('id, project, created_at, updated_at')
+                    .single();
+                if (error) throw error;
+                const savedProject = projectFromRow(data);
+                const projects = (state.projects || []).map(project => project.id === id ? savedProject : project);
                 setState({ projects });
                 await actions.refreshDashboard();
                 return { success: true };
@@ -352,13 +340,21 @@ const Store = (() => {
 
         async updateProject(id, updates) {
             try {
-                const projects = (state.projects || []).map(project => {
-                    if (project.id !== id) return project;
-                    const updatedProject = { ...project, ...updates, updatedAt: new Date().toISOString() };
-                    return updatedProject.status === 'completed'
-                        ? { ...updatedProject, progress: 100 }
-                        : updatedProject;
-                });
+                const currentProject = (state.projects || []).find(project => project.id === id);
+                if (!currentProject) throw new Error('Project not found');
+                const mergedProject = { ...currentProject, ...updates, updatedAt: new Date().toISOString() };
+                const updatedProject = mergedProject.status === 'completed'
+                    ? { ...mergedProject, progress: 100 }
+                    : mergedProject;
+                const { data, error } = await getClient()
+                    .from('projects')
+                    .update({ project: projectPayload(updatedProject) })
+                    .eq('id', id)
+                    .select('id, project, created_at, updated_at')
+                    .single();
+                if (error) throw error;
+                const savedProject = projectFromRow(data);
+                const projects = (state.projects || []).map(project => project.id === id ? savedProject : project);
                 setState({ projects });
                 await actions.refreshDashboard();
                 return { success: true };
@@ -370,6 +366,8 @@ const Store = (() => {
         async deleteProject(id) {
             try {
                 await delay(250);
+                const { error } = await getClient().from('projects').delete().eq('id', id);
+                if (error) throw error;
                 const projects = (state.projects || []).filter(p => p.id !== id);
                 setState({ projects });
                 await actions.refreshDashboard();
@@ -381,29 +379,30 @@ const Store = (() => {
 
         async updateUserProfile(updates) {
             try {
-                await delay(400);
                 const currentUser = state.user;
                 if (!currentUser) throw new Error('Not authenticated');
                 const updatedUser = { ...currentUser, ...updates };
                 if (updates.name && updates.name !== currentUser.name) {
                     updatedUser.avatar = updates.name.charAt(0).toUpperCase();
                 }
-                setState({ user: updatedUser });
-                try {
-                    const accounts = loadAccountsFromStorage();
-                    const accountIndex = accounts.findIndex(account => account.id === currentUser.id);
-                    if (accountIndex > -1) {
-                        accounts[accountIndex] = { ...accounts[accountIndex], ...updatedUser };
-                        saveAccountsToStorage(accounts);
+                const { email, password, id, role, ...profileMetadata } = updatedUser;
+                const authUpdates = {
+                    data: {
+                        ...profileMetadata,
+                        avatar: updatedUser.avatar
                     }
-                    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-                    if (raw) {
-                        const data = JSON.parse(raw);
-                        data.user = updatedUser;
-                        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
-                    }
-                } catch (_) {}
-                return { success: true, user: updatedUser };
+                };
+                if (email && normalizeEmail(email) !== normalizeEmail(currentUser.email)) {
+                    authUpdates.email = normalizeEmail(email);
+                }
+                if (password) authUpdates.password = password;
+                const { data, error } = await getClient().auth.updateUser({
+                    ...authUpdates
+                });
+                if (error) throw error;
+                const savedUser = userFromAuth(data.user);
+                setState({ user: savedUser });
+                return { success: true, user: savedUser };
             } catch (err) {
                 return { success: false, error: err.message };
             }
@@ -476,8 +475,9 @@ const Store = (() => {
     const getState = () => clone(state);
     const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-    const init = () => {
-        actions.loadAuth();
+    const init = async () => {
+        await initializeSupabase();
+        await actions.loadAuth();
     };
 
     return {
@@ -487,9 +487,7 @@ const Store = (() => {
         actions,
         init,
         computeDashboardStats,
-        _state: state,
-        _saveProjects: (projects) => saveProjectsToStorage(state.user, projects),
-        _loadProjects: loadProjectsFromStorage
+        _state: state
     };
 })();
 
@@ -1575,6 +1573,11 @@ function bindEvents() {
         }
 
         if (result.success) {
+            if (result.requiresEmailConfirmation) {
+                Toast.success('Check your email to confirm your account, then log in.', 'Confirm your email');
+                Router.navigate('/login');
+                return;
+            }
             Toast.success(`Welcome ${result.user?.name || 'User'}!`, 'Authentication Successful');
             await Store.actions.refreshDashboard();
             Router.navigate('/dashboard');
@@ -1589,7 +1592,7 @@ function bindEvents() {
     document.addEventListener('click', async (e) => {
         if (e.target.closest('#logoutBtn') || e.target.closest('#profileLogout')) {
             e.preventDefault();
-            Store.actions.logout();
+            await Store.actions.logout();
             Toast.success('You have been logged out.', 'Goodbye');
             Router.navigate('/');
         }
@@ -1724,7 +1727,10 @@ function bindEvents() {
         }
 
         const updates = { name, email, phone, company, bio, emailUpdates };
-        if (password) updates.passwordUpdatedAt = new Date().toISOString();
+        if (password) {
+            updates.password = password;
+            updates.passwordUpdatedAt = new Date().toISOString();
+        }
 
         const result = await Store.actions.updateUserProfile(updates);
         if (result.success) {
@@ -2272,8 +2278,13 @@ Store.subscribe((state, prev) => {
  *  11. INITIALIZATION
  *  ============================================================
  */
-document.addEventListener('DOMContentLoaded', () => {
-    Store.init();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await Store.init();
+    } catch (error) {
+        console.error('Unable to initialize Supabase:', error);
+        Toast.error('Authentication is temporarily unavailable. Please try again later.', 'Configuration required');
+    }
     Router.init();
     bindEvents();
 
