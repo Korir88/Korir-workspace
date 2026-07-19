@@ -2,12 +2,13 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
+const publicDirectory = path.join(__dirname, "public");
 
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(publicDirectory));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(publicDirectory, "index.html"));
 });
 
 // Vercel invokes the exported Express app as a serverless function.
