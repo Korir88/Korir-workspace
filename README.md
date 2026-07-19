@@ -1,732 +1,266 @@
-# Korir Digital Portfolio Website
+# 🚀 Korir Workspace
 
-A modern, responsive portfolio website for **Korir Digital**, showcasing professional services in **Software Development**, **Virtual Assistance**, and **Graphic Design**. The website provides an engaging user experience with interactive pricing, project showcases, responsive layouts, and a project inquiry system.
+> **An AI-powered digital workspace for knowledge management, intelligent document retrieval, project collaboration, and productivity automation.**
 
----
-
-## 📌 Overview
-
-Korir Digital is a personal portfolio and business website designed to help individuals and businesses discover digital solutions under one roof.
-
-Visitors can:
-
-- Learn about available services
-- View completed projects
-- Compare pricing packages
-- Explore technical skills
-- Submit project requests
-- Contact the developer
+Korir Workspace is a modern SaaS platform that centralizes documents, AI assistants, knowledge bases, projects, and business workflows into a single intelligent workspace. Powered by Retrieval-Augmented Generation (RAG) and cloud integrations, it enables users to securely organize information, ask questions in natural language, and automate everyday tasks.
 
 ---
 
-## ✨ Features
+## 🌟 Vision
 
-### 💻 Software Development
-
-- Custom business websites
-- Responsive web applications
-- Booking systems
-- Database-powered applications
-- Hosting & deployment support
-
-### 🎧 Virtual Assistance
-
-- Calendar management
-- Email management
-- Data entry
-- Customer support
-- Administrative assistance
-- Document preparation
-
-### 🎨 Graphic Design
-
-- Logo design
-- Brand identity
-- Flyers & Posters
-- Social media graphics
-- Marketing materials
+To build an intelligent digital workspace where users can manage knowledge, collaborate on projects, automate workflows, and interact with AI to access information quickly and accurately.
 
 ---
 
-## 📁 Project Structure
+## ✨ Core Features
 
-```text
-korir-digital/
-│── index.html
-│── dev.html
-│── vet.html
-│── restaurant.html
-│── travel.html
-│── inventory.html
-│── README.md
-│── LICENSE
-│── .gitignore
-│
-├── assets/
-│   ├── css/
-│   │   ├── style.css
-│   │   ├── dev.css
-│   │   └── pages.css
-│   │
-│   ├── js/
-│   │   ├── main.js
-│   │   ├── navigation.js
-│   │   └── form.js
-│   │
-│   ├── images/
-│   │   ├── Emmanuel.jpg
-│   │   ├── logo.png
-│   │   └── ...
-│   │
-│   └── icons/
-│
-└── screenshots/
-    ├── homepage.png
-    ├── services.png
-    ├── portfolio.png
-    └── contact.png
-```
+### 🤖 AI Knowledge Assistant
 
----
+- Natural language conversations
+- Context-aware responses
+- Multi-turn chat
+- AI-powered document Q&A
+- Source citations
+- Conversation history
 
-## 🌐 Website Pages
+### 📚 Knowledge Base
 
-| Page | Description |
-|------|-------------|
-| **index.html** | Main landing page |
-| **dev.html** | Technical skills and technologies |
-| **vet.html** | GreenValley Veterinary Care project |
-| **restaurant.html** | Indulge Cucina restaurant website |
-| **travel.html** | TravelEase travel planner |
-| **inventory.html** | Indulge Essentials e-commerce store |
+- Create and organize knowledge collections
+- Upload and index documents
+- Semantic search with AI
+- Categories and tags
+- Version management
 
----
+### 📄 Document Management
 
-## 🚀 Technologies Used
+- Upload PDFs, Word, Excel, CSV, Markdown, and text files
+- Drag-and-drop interface
+- OCR support for images
+- File preview and organization
+- Version history
 
-### Frontend
+### ☁️ Cloud Storage Integration
 
-- HTML5
-- CSS3
-- JavaScript (ES6)
+- Google Drive
+- Microsoft OneDrive
+- Dropbox
+- Supabase Storage
 
-### Styling
+### 🔍 Intelligent Search
 
-- CSS Grid
-- Flexbox
-- CSS Variables
-- Responsive Design
-- CSS Animations
+- Semantic search
+- Keyword search
+- Hybrid search
+- AI-generated summaries
+- Fast document retrieval
 
-### Icons
+### 📋 Workspace Management
 
-- Font Awesome
+- Projects
+- Tasks
+- Notes
+- Knowledge bases
+- Saved prompts
+- AI conversations
 
-### Fonts
+### 👥 Collaboration
 
-- Inter
-- Space Grotesk
-- IBM Plex Mono
+- Shared workspaces
+- Team roles and permissions
+- Comments
+- Notifications
+- Activity history
+
+### 📊 Analytics Dashboard
+
+- Workspace overview
+- AI usage insights
+- Storage statistics
+- Recent activity
+- Productivity metrics
+
+### 🔐 Authentication & Security
+
+- Email and password login
+- Google authentication
+- GitHub authentication
+- Secure user sessions
+- Role-based access control
 
 ---
 
-## 🎯 Website Sections
+# 🛠 Technology Stack
 
-### 🏠 Hero Section
+## Frontend
 
-- Professional introduction
-- Animated job title rotation
-- Availability status
-- Call-to-action buttons
-- Contact information
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
 
----
+## Backend
 
-### 💼 Services
+- Node.js
+- Express.js
 
-The services section highlights:
+## Database
 
-- Software Development
-- Virtual Assistance
-- Graphic Design
+- PostgreSQL
+- Supabase
 
-Each service includes:
+## AI
 
-- Description
-- Key features
-- Starting price
-- Project request shortcut
+- OpenAI API
+- Retrieval-Augmented Generation (RAG)
+- Embeddings
+- Semantic Search
 
----
+## Authentication
 
-### 📂 Portfolio
+- Supabase Auth
 
-The portfolio showcases several completed projects:
+## Storage
 
-- 🐾 GreenValley Veterinary Care
-- 🍽️ Indulge Cucina
-- ✈️ TravelEase
-- 🛍️ Indulge Essentials Store
+- Supabase Storage
 
-Each project includes:
+## Deployment
 
-- Category
-- Description
-- Live preview
-- Project page
-
----
-
-### 💰 Pricing
-
-Pricing is organized into three categories:
-
-#### Software Development
-
-- Starter
-- Growth
-- Pro
-
-#### Virtual Assistance
-
-- Starter
-- Growth
-- Pro
-
-#### Graphic Design
-
-- Starter
-- Growth
-- Pro
-
-Each pricing plan contains:
-
-- Timeline
-- Estimated cost
-- Features
-- Project selection button
-
----
-
-### 👨‍💻 Skills
-
-The Skills page provides information about:
-
-- Programming Languages
-- Frontend Development
-- Backend Development
-- Databases
-- UI/UX Design
-- Graphic Design
-- Productivity Tools
-- Virtual Assistance Skills
-
----
-
-### 📩 Project Request Form
-
-The integrated project form collects:
-
-- First Name
-- Last Name
-- Email Address
-- Phone Number
-- Company
-- Service
-- Budget
-- Timeline
-- Project Description
-
-Upon submission, the form:
-
-- Opens the user's default email client
-- Pre-populates the email
-- Displays a confirmation summary
-
----
-
-## 📱 Responsive Design
-
-The website is fully optimized for:
-
-- 💻 Desktop
-- 🖥️ Laptop
-- 📱 Mobile
-- 📲 Tablet
-
-Responsive features include:
-
-- Mobile navigation
-- Flexible layouts
-- Responsive typography
-- Adaptive spacing
-- Touch-friendly buttons
-
----
-
-## ⚡ Interactive Features
-
-- Sticky navigation bar
-- Smooth scrolling
-- Scroll reveal animations
-- Mobile navigation drawer
-- Animated role rotation
-- Pricing tab switcher
-- Service quick selection
-- Email project request
-- Hover effects
-- Accessible keyboard navigation
-
----
-
-## 📸 Screenshots
-
-Example screenshots included in the repository:
-
-```
-screenshots/
-├── homepage.png
-├── services.png
-├── portfolio.png
-└── contact.png
-```
-
----
-
-## 🚀 Getting Started
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/your-username/korir-digital.git
-```
-
-### Navigate into the Project
-
-```bash
-cd korir-digital
-```
-
-### Open the Website
-
-Simply open:
-
-```text
-index.html
-```
-
-using any modern web browser.
-
-No installation or additional dependencies are required.
-
----
-
-## 🌍 Deployment
-
-This project can be deployed on:
-
-- GitHub Pages
-- Netlify
 - Vercel
-- Firebase Hosting
-- Cloudflare Pages
+- GitHub Actions
 
 ---
 
-## 🔮 Future Enhancements
-
-Planned improvements include:
-
-- Contact form backend
-- Email API integration
-- Authentication system
-- Client dashboard
-- Blog section
-- Testimonials
-- Dark mode
-- CMS integration
-- Project management portal
-- Payment gateway integration
-- Live chat support
-- SEO optimization
-- Performance optimization
-- Google Analytics integration
-- Progressive Web App (PWA)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-
-```bash
-git checkout -b feature/new-feature
-```
-
-3. Commit your changes
-
-```bash
-git commit -m "Add new feature"
-```
-
-4. Push to GitHub
-
-```bash
-git push origin feature/new-feature
-```
-
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
-See the **LICENSE** file for more information.
-
----
-
-## 👤 Author
-
-**Emmanuel Korir**
-
-Software Developer • Virtual Assistant • Graphic Designer
-
-📍 Nairobi, Kenya
-
-📧 Email: iamkorir200@gmail.com
-
-📞 Phone: +254 726 605919
-
----
-
-## ⭐ Support
-
-If you found this project useful, consider giving it a ⭐ on GitHub.
-
-Your support helps showcase the project and encourages future improvements.# Korir Digital Portfolio Website
-
-A modern, responsive portfolio website showcasing **Software Development**, **Virtual Assistance**, and **Graphic Design** services. The website is designed to help potential clients explore services, view completed projects, compare pricing packages, and submit project requests.
-
-## 🚀 Live Features
-
-- Modern and responsive design
-- Mobile-friendly navigation
-- Animated hero section
-- Portfolio showcase
-- Services section
-- Interactive pricing tabs
-- Project request form
-- Email integration using `mailto`
-- Smooth scrolling navigation
-- Scroll reveal animations
-- Rotating professional titles
-- Accessible design with keyboard focus states
-
----
-
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```text
-korir-digital/
-│── index.html
-│── dev.html
-│── vet.html
-│── restaurant.html
-│── travel.html
-│── inventory.html
-│── README.md
-│── LICENSE
-│── .gitignore
+korir-workspace/
 │
-├── assets/
-│   ├── css/
-│   │   ├── style.css
-│   │   ├── dev.css
-│   │   └── pages.css
-│   │
-│   ├── js/
-│   │   ├── main.js
-│   │   ├── navigation.js
-│   │   └── form.js
-│   │
-│   ├── images/
-│   │   ├── Emmanuel.jpg
-│   │   ├── logo.png
-│   │   └── ...
-│   │
-│   └── icons/
-│
-└── screenshots/
-    ├── homepage.png
-    ├── services.png
-    ├── portfolio.png
-    └── contact.png
+├── app/
+├── components/
+├── hooks/
+├── lib/
+├── services/
+├── types/
+├── public/
+├── prisma/
+├── supabase/
+├── docs/
+├── tests/
+├── styles/
+├── package.json
+├── README.md
+└── .env.example
 ```
 
 ---
 
-## ✨ Sections Included
+# 🚀 Getting Started
 
-### Hero Section
-
-- Professional introduction
-- Animated role rotation
-- Call-to-action buttons
-- Availability status
-- Contact information
-
-### Services
-
-The website showcases three major services:
-
-- 💻 Software Development
-- 🎧 Virtual Assistance
-- 🎨 Graphic Design
-
-Each service includes:
-
-- Description
-- Key features
-- Starting price
-- Quick request button
-
----
-
-### Portfolio
-
-Includes demo projects such as:
-
-- GreenValley Veterinary Care
-- Indulge Cucina Restaurant
-- TravelEase
-- Indulge Essentials Store
-
-Each project contains:
-
-- Category
-- Description
-- Demo link
-
----
-
-### Pricing
-
-Pricing is organized into three categories:
-
-#### Software Development
-
-- Starter
-- Growth
-- Pro
-
-#### Virtual Assistance
-
-- Starter
-- Growth
-- Pro
-
-#### Graphic Design
-
-- Starter
-- Growth
-- Pro
-
-Each package includes:
-
-- Estimated timeline
-- Starting cost
-- Features
-- Quick selection button
-
----
-
-### Skills
-
-A dedicated page (`dev.html`) provides an overview of:
-
-- Programming Languages
-- Web Development
-- Databases
-- Graphic Design Tools
-- Virtual Assistance Skills
-- Productivity Tools
-
----
-
-### Project Request Form
-
-Clients can submit:
-
-- Name
-- Email
-- Phone Number
-- Company
-- Desired service
-- Budget
-- Timeline
-- Project description
-
-Upon submission:
-
-- Opens the user's default email application
-- Pre-fills the project details
-- Displays a confirmation summary
-
----
-
-## 🛠 Technologies Used
-
-### Frontend
-
-- HTML5
-- CSS3
-- Vanilla JavaScript
-
-### Fonts
-
-- Inter
-- Space Grotesk
-- IBM Plex Mono
-
-### Icons
-
-- Font Awesome 6
-
-### Design
-
-- CSS Grid
-- Flexbox
-- CSS Variables
-- Responsive Layout
-- CSS Animations
-
----
-
-## 📱 Responsive Design
-
-The website is optimized for:
-
-- Desktop
-- Laptop
-- Tablet
-- Mobile devices
-
-Responsive features include:
-
-- Mobile navigation menu
-- Flexible grids
-- Adaptive typography
-- Optimized spacing
-
----
-
-## 🎯 Key Features
-
-- Responsive interface
-- Clean typography
-- Smooth animations
-- Interactive pricing tabs
-- Scroll reveal effects
-- Mobile navigation
-- Portfolio showcase
-- Project inquiry form
-- Email integration
-- Modern UI/UX
-
----
-
-## 📧 Contact
-
-**Emmanuel Korir**
-
-📍 Nairobi, Kenya
-
-📧 Email: iamkorir200@gmail.com
-
-📞 Phone: +254 726 605919
-
----
-
-## 🚀 Getting Started
-
-### Clone the Repository
+## Clone the repository
 
 ```bash
-git clone https://github.com/your-username/korir-digital.git
+git clone https://github.com/Korir88/korir-workspace.git
 ```
 
-### Navigate to the Project
+## Navigate to the project
 
 ```bash
-cd korir-digital
+cd korir-workspace
 ```
 
-### Open the Website
+## Install dependencies
 
-Simply open:
+```bash
+npm install
+```
+
+## Configure environment variables
+
+Create a `.env.local` file and add your credentials:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+DATABASE_URL=
+OPENAI_API_KEY=
+```
+
+## Start the development server
+
+```bash
+npm run dev
+```
+
+Open your browser and visit:
 
 ```text
-index.html
+http://localhost:3000
 ```
 
-in your preferred web browser.
+---
 
-No installation or build tools are required.
+# 🗺 Development Roadmap
+
+## Phase 1 — MVP
+
+- User authentication
+- AI chat interface
+- File upload
+- Knowledge base
+- Semantic search
+- Dashboard
+
+## Phase 2
+
+- Google Drive integration
+- OneDrive integration
+- Dropbox integration
+- AI memory
+- Collections and folders
+
+## Phase 3
+
+- Team collaboration
+- AI agents
+- Workflow automation
+- Mobile support
+- Public API
 
 ---
 
-## 🌐 Deployment
+# 🤝 Contributing
 
-This project can be deployed using:
+Contributions are welcome!
 
-- GitHub Pages
-- Netlify
-- Vercel
-- Firebase Hosting
-- Cloudflare Pages
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push your branch.
+5. Open a Pull Request.
 
----
-
-## 📈 Future Improvements
-
-Potential enhancements include:
-
-- Backend contact form
-- Database integration
-- Admin dashboard
-- Authentication
-- Client portal
-- Project tracking
-- Blog section
-- Dark mode
-- Live chat
-- Payment gateway integration
-- Portfolio CMS
-- Testimonials
-- SEO optimization
-- Google Analytics integration
-- Progressive Web App (PWA)
+Please follow consistent coding standards and include meaningful commit messages.
 
 ---
 
-## 📄 License
+# 📄 License
 
-This project is licensed under the MIT License.
-
-Feel free to use, modify, and distribute this project with proper attribution.
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Emmanuel Korir**
 
-Software Developer | Virtual Assistant | Graphic Designer
+IT Support Specialist • Full-Stack Developer • AI & Cloud Enthusiast
 
-Helping businesses build modern digital experiences through web development, administrative support, and creative design.
-# Korir-workspace
+- GitHub: https://github.com/Korir88
+- Portfolio: *Coming Soon*
+
+---
+
+# ⭐ Support
+
+If you find this project useful, please consider giving it a **⭐ Star** on GitHub. Your support helps improve the project and encourages future development.
