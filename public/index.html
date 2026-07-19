@@ -74,22 +74,27 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/iife.min.js"
+            onerror="this.onerror=null; this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/iife.min.js';"
+            onload="console.log('[CDN] Supabase loaded from cdn.jsdelivr.net')"></script>
     <script>
         if (!window.supabase) {
-            console.warn('Primary Supabase CDN failed, loading fallback...');
+            console.warn('[CDN] Primary CDN failed, trying fallback...');
             var fallback = document.createElement('script');
             fallback.src = 'https://unpkg.com/@supabase/supabase-js@2/dist/umd/iife.min.js';
             fallback.onerror = function() {
-                console.error('Failed to load Supabase from fallback CDN');
+                console.error('[CDN] All CDN sources failed');
                 var errDiv = document.createElement('div');
                 errDiv.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:20px 30px;background:#fde8e8;color:#991b1b;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);z-index:9999;max-width:90vw;font-family:system-ui,sans-serif;';
                 errDiv.innerHTML = '<strong>⚠️ Configuration Error</strong><p style="margin:10px 0 0 0;font-size:0.9rem;">Unable to load the authentication service. This may be caused by an ad blocker or browser extension. Please disable your ad blocker for this site and refresh the page.</p>';
                 document.body.appendChild(errDiv);
             };
+            fallback.onload = function() {
+                console.log('[CDN] Supabase loaded from unpkg.com fallback');
+            };
             document.head.appendChild(fallback);
         }
     </script>
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
 </body>
 </html>
