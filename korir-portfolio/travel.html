@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TravelEase - Your Journey Planner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/travel.css" />
+</head>
+<body>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- HEADER -->
+    <!-- ──────────────────────────────────────────────── -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <i class="fas fa-globe-americas"></i> TravelEase
+            </a>
+
+            <ul class="nav-menu">
+                <li><a class="active" data-page="home" onclick="showPage('home')">Home</a></li>
+                <li><a data-page="packages" onclick="showPage('packages')">Packages</a></li>
+                <li><a data-page="about" onclick="showPage('about')">About</a></li>
+                <li><a data-page="contact" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn btn-outline" onclick="openModal('signin')">Sign In</button>
+                <button class="btn btn-primary" onclick="openModal('signup')">Sign Up</button>
+            </div>
+
+            <!-- hidden logged-in state -->
+            <div class="auth-buttons" id="authLoggedIn" style="display:none;">
+                <span style="color:var(--dark);font-weight:500;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-user-circle" style="font-size:1.4rem;color:var(--primary);"></i>
+                    <span id="userDisplayName">User</span>
+                </span>
+                <button class="btn btn-danger" onclick="logoutUser()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- PAGE: HOME -->
+    <!-- ──────────────────────────────────────────────── -->
+    <section id="page-home" class="page-section active">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Discover Your Next Adventure</h1>
+                <p>Plan your dream vacation with our easy-to-use travel planner and explore thousands of destinations worldwide.</p>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search destinations, activities, or hotels...">
+                    <button class="search-btn"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Destinations -->
+        <section class="destinations">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Popular Destinations</h2>
+                    <p>Explore our most sought-after travel destinations around the world</p>
+                </div>
+                <div class="destinations-grid">
+                    <div class="destination-card">
+                        <div class="card-image"><img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bali"></div>
+                        <div class="card-content">
+                            <h3>Bali, Indonesia</h3>
+                            <p>Experience the perfect blend of culture, beaches, and nightlife in the Island of Gods.</p>
+                            <div class="card-meta">
+                                <div class="price">$899</div>
+                                <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="destination-card">
+                        <div class="card-image"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Santorini"></div>
+                        <div class="card-content">
+                            <h3>Santorini, Greece</h3>
+                            <p>White-washed buildings and blue domes overlooking the stunning Aegean Sea.</p>
+                            <div class="card-meta">
+                                <div class="price">$1,199</div>
+                                <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="destination-card">
+                        <div class="card-image"><img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kyoto"></div>
+                        <div class="card-content">
+                            <h3>Kyoto, Japan</h3>
+                            <p>Discover ancient temples, traditional gardens, and the beautiful cherry blossoms.</p>
+                            <div class="card-meta">
+                                <div class="price">$1,299</div>
+                                <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking -->
+        <section class="booking">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Plan Your Trip</h2>
+                    <p>Book your dream vacation in three simple steps</p>
+                </div>
+                <div class="booking-steps">
+                    <div class="step"><div class="step-number">1</div><div class="step-text">Choose Destination</div></div>
+                    <div class="step"><div class="step-number">2</div><div class="step-text">Customize Your Trip</div></div>
+                    <div class="step"><div class="step-number">3</div><div class="step-text">Book &amp; Enjoy</div></div>
+                </div>
+                <div class="booking-form">
+                    <h3 class="form-title">Start Your Journey</h3>
+                    <form id="bookingForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="destination">Destination</label>
+                                <input type="text" id="destination" class="form-control" placeholder="Where to?">
+                            </div>
+                            <div class="form-group">
+                                <label for="check-in">Check In</label>
+                                <input type="date" id="check-in" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="check-out">Check Out</label>
+                                <input type="date" id="check-out" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="travelers">Travelers</label>
+                                <select id="travelers" class="form-control">
+                                    <option value="1">1 Traveler</option>
+                                    <option value="2" selected>2 Travelers</option>
+                                    <option value="3">3 Travelers</option>
+                                    <option value="4">4 Travelers</option>
+                                    <option value="5">5+ Travelers</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Search Packages</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-title">
+                    <h2>What Travelers Say</h2>
+                    <p>Read about experiences from our community of explorers</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"TravelEase made planning our honeymoon so simple! The destination guides were incredibly helpful, and we found the perfect package for our budget."</div>
+                        <div class="testimonial-author">
+                            <div class="author-image"><img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sarah"></div>
+                            <div class="author-details"><h4>Sarah Johnson</h4><p>Honeymooner</p></div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"As a solo traveler, I appreciate how easy it is to find safe and interesting destinations. The booking process was smooth, and the support team was helpful."</div>
+                        <div class="testimonial-author">
+                            <div class="author-image"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael"></div>
+                            <div class="author-details"><h4>Michael Chen</h4><p>Solo Traveler</p></div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"Our family vacation was perfectly organized through TravelEase. The kids had a blast, and we didn't have to worry about any logistics. Highly recommend!"</div>
+                        <div class="testimonial-author">
+                            <div class="author-image"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jessica"></div>
+                            <div class="author-details"><h4>Jessica Martinez</h4><p>Family Traveler</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter">
+            <div class="container">
+                <h2>Subscribe to Our Newsletter</h2>
+                <p>Get travel inspiration, exclusive deals, and destination guides delivered straight to your inbox.</p>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </section>
+    </section>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- PAGE: PACKAGES -->
+    <!-- ──────────────────────────────────────────────── -->
+    <section id="page-packages" class="page-section">
+        <div class="container" style="padding-top:30px;">
+            <div class="section-title">
+                <h2>Our Travel Packages</h2>
+                <p>Curated experiences for every type of traveler</p>
+            </div>
+
+            <div class="packages-grid">
+                <!-- Package 1 -->
+                <div class="package-card">
+                    <span class="package-badge">Best Seller</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bali"></div>
+                    <div class="card-content">
+                        <h3>Bali Bliss</h3>
+                        <p>7 days of tropical paradise with luxury stays, temple tours, and beach relaxation.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-bed"></i> 4-star resort</span>
+                            <span><i class="fas fa-utensils"></i> All meals</span>
+                            <span><i class="fas fa-car"></i> Transfers</span>
+                            <span><i class="fas fa-map-signs"></i> Guided tours</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$899 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 2 -->
+                <div class="package-card">
+                    <span class="package-badge" style="background:var(--secondary);">Luxury</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Santorini"></div>
+                    <div class="card-content">
+                        <h3>Santorini Sunset</h3>
+                        <p>5 days of romance in the Aegean with caldera views, wine tasting, and sunset cruises.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-bed"></i> Boutique cave hotel</span>
+                            <span><i class="fas fa-wine-glass-alt"></i> Wine tour</span>
+                            <span><i class="fas fa-ship"></i> Sunset cruise</span>
+                            <span><i class="fas fa-camera"></i> Photo session</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$1,199 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 3 -->
+                <div class="package-card">
+                    <span class="package-badge" style="background:#9b59b6;">Cultural</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kyoto"></div>
+                    <div class="card-content">
+                        <h3>Kyoto Heritage</h3>
+                        <p>6 days exploring ancient temples, tea ceremonies, and the art of Japanese tradition.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-temple"></i> Temple visits</span>
+                            <span><i class="fas fa-mug-hot"></i> Tea ceremony</span>
+                            <span><i class="fas fa-kiwi-bird"></i> Nature walks</span>
+                            <span><i class="fas fa-train"></i> Rail pass</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$1,299 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 4 -->
+                <div class="package-card">
+                    <span class="package-badge" style="background:#e67e22;">Adventure</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Swiss Alps"></div>
+                    <div class="card-content">
+                        <h3>Swiss Alps Trek</h3>
+                        <p>8 days of mountain hiking, cable cars, and alpine villages in the heart of Switzerland.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-hiking"></i> Guided treks</span>
+                            <span><i class="fas fa-mountain"></i> Cable cars</span>
+                            <span><i class="fas fa-snowflake"></i> Alpine views</span>
+                            <span><i class="fas fa-bed"></i> Mountain lodges</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$1,499 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 5 -->
+                <div class="package-card">
+                    <span class="package-badge" style="background:#1abc9c;">Beach</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Maldives"></div>
+                    <div class="card-content">
+                        <h3>Maldives Escape</h3>
+                        <p>5 days of overwater bungalows, crystal-clear lagoons, and underwater adventures.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-water"></i> Overwater villa</span>
+                            <span><i class="fas fa-fish"></i> Snorkeling</span>
+                            <span><i class="fas fa-spa"></i> Spa treatment</span>
+                            <span><i class="fas fa-utensils"></i> Fine dining</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$2,199 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package 6 -->
+                <div class="package-card">
+                    <span class="package-badge" style="background:#e74c3c;">City Break</span>
+                    <div class="card-image"><img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paris"></div>
+                    <div class="card-content">
+                        <h3>Parisian Dream</h3>
+                        <p>4 days of romance, art, and cuisine in the City of Light with Eiffel Tower and Louvre.</p>
+                        <div class="package-features">
+                            <span><i class="fas fa-landmark"></i> Museum passes</span>
+                            <span><i class="fas fa-bread"></i> Food tour</span>
+                            <span><i class="fas fa-boat"></i> Seine cruise</span>
+                            <span><i class="fas fa-shopping-bag"></i> Shopping</span>
+                        </div>
+                        <div class="package-footer">
+                            <div class="package-price">$999 <small>/ person</small></div>
+                            <button class="btn btn-primary" onclick="openModal('signin')">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- PAGE: ABOUT -->
+    <!-- ──────────────────────────────────────────────── -->
+    <section id="page-about" class="page-section">
+        <div class="about-hero">
+            <div class="container">
+                <h1>About TravelEase</h1>
+                <p>We're on a mission to make travel planning effortless, inspiring, and accessible for everyone.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-card">
+                    <i class="fas fa-compass"></i>
+                    <h3>Our Vision</h3>
+                    <p>To become the world's most trusted travel companion, helping millions discover the joy of exploration.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Our Values</h3>
+                    <p>Authenticity, sustainability, and customer delight are at the core of everything we do.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Community First</h3>
+                    <p>We believe in building a global community of travelers who share stories, tips, and memories.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>Sustainable Travel</h3>
+                    <p>We're committed to promoting eco-friendly travel and supporting local communities worldwide.</p>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;">
+                <h2>Meet Our Team</h2>
+                <p>The passionate people behind TravelEase</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="assets/images/Emmanuel.jpg" alt="Emmanuel Korir">
+                    <h4>Emmanuel Korir</h4>
+                    <p>CEO &amp; Founder</p>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/James.jpg" alt="James">
+                    <h4>James Park</h4>
+                    <p>Head of Product</p>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/Lisa.jpg" alt="Lisa">
+                    <h4>Lisa Chen</h4>
+                    <p>Travel Curator</p>
+                </div>
+                <div class="team-member">
+                    <img src="assets/images/David.jpg" alt="David">
+                    <h4>David Okafor</h4>
+                    <p>Customer Experience</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- PAGE: CONTACT -->
+    <!-- ──────────────────────────────────────────────── -->
+    <section id="page-contact" class="page-section">
+        <div class="contact-hero">
+            <div class="container">
+                <h1>Get in Touch</h1>
+                <p>We'd love to hear from you. Reach out with questions, feedback, or travel ideas.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info-cards">
+                    <div class="contact-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Visit Us</h4>
+                            <p>00100 Nairobi, Nairobi City</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Call Us</h4>
+                            <p>+(2547) 2660-5919</p>
+                            <p style="font-size:0.85rem;color:#999;">Mon–Fri, 9am–6pm EST</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email Us</h4>
+                            <p>iamkorir200@gmail.com</p>
+                            <p style="font-size:0.85rem;color:#999;">We reply within 24 hours</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Working Hours</h4>
+                            <p>Monday – Friday: 9:00 AM – 6:00 PM</p>
+                            <p style="font-size:0.85rem;color:#999;">Saturday: 10:00 AM – 2:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <h3>Send Us a Message</h3>
+                    <form id="contactForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contactName">Full Name</label>
+                                <input type="text" id="contactName" class="form-control" placeholder="Your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail">Email Address</label>
+                                <input type="email" id="contactEmail" class="form-control" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactSubject">Subject</label>
+                            <input type="text" id="contactSubject" class="form-control" placeholder="How can we help?" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessage">Message</label>
+                            <textarea id="contactMessage" class="form-control" placeholder="Tell us about your travel plans or questions..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- MODAL: SIGN IN -->
+    <!-- ──────────────────────────────────────────────── -->
+    <div class="modal-overlay" id="signinModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('signin')">&times;</button>
+            <h2>Welcome Back</h2>
+            <p class="sub">Sign in to access your account and bookings</p>
+
+            <form id="signinForm">
+                <div class="form-group">
+                    <label for="signinEmail">Email Address</label>
+                    <input type="email" id="signinEmail" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group password-toggle">
+                    <label for="signinPassword">Password</label>
+                    <input type="password" id="signinPassword" class="form-control" placeholder="••••••••" required>
+                    <span class="toggle-eye" onclick="togglePassword('signinPassword', this)"><i class="far fa-eye"></i></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+
+            <div class="modal-divider"><span>or</span></div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="closeModal('signin');openModal('signup');">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <div class="modal-footer-text">
+                Don't have an account? <a onclick="closeModal('signin');openModal('signup');">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- MODAL: SIGN UP -->
+    <!-- ──────────────────────────────────────────────── -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('signup')">&times;</button>
+            <h2>Create Your Account</h2>
+            <p class="sub">Join TravelEase and start planning your adventures</p>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" class="form-control" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group password-toggle">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" class="form-control" placeholder="••••••••" required minlength="6">
+                    <span class="toggle-eye" onclick="togglePassword('signupPassword', this)"><i class="far fa-eye"></i></span>
+                </div>
+                <div class="form-group password-toggle">
+                    <label for="signupConfirm">Confirm Password</label>
+                    <input type="password" id="signupConfirm" class="form-control" placeholder="••••••••" required>
+                    <span class="toggle-eye" onclick="togglePassword('signupConfirm', this)"><i class="far fa-eye"></i></span>
+                </div>
+                <button type="submit" class="btn btn-success">Create Account</button>
+            </form>
+
+            <div class="modal-divider"><span>or</span></div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="closeModal('signup');openModal('signin');">
+                <i class="fas fa-sign-in-alt"></i> Sign In Instead
+            </button>
+            <div class="modal-footer-text">
+                Already have an account? <a onclick="closeModal('signup');openModal('signin');">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- FOOTER -->
+    <!-- ──────────────────────────────────────────────── -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>TravelEase</h3>
+                    <p>Making travel planning simple and enjoyable. Discover your next adventure with us.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a onclick="showPage('about')">About Us</a></li>
+                        <li><a onclick="showPage('contact')">Contact Us</a></li>
+                        <li><a onclick="showPage('packages')">Packages</a></li>
+                        <li><a onclick="showPage('home')">Destinations</a></li>
+                        <li><a href="#">Travel Guides</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Top Destinations</h3>
+                    <ul>
+                        <li><a href="#">Bali, Indonesia</a></li>
+                        <li><a href="#">Paris, France</a></li>
+                        <li><a href="#">Tokyo, Japan</a></li>
+                        <li><a href="#">Rome, Italy</a></li>
+                        <li><a href="#">New York, USA</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 00100 Nairobi, Nairobi City</li>
+                        <li><i class="fas fa-phone"></i> +(2547) 2660-5919</li>
+                        <li><i class="fas fa-envelope"></i> iamkorir200@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 TravelEase. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/travel.js"></script>
+</body>
+</html>
