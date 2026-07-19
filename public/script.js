@@ -38,13 +38,28 @@ const Store = (() => {
     };
 
     const initializeSupabase = async () => {
+        console.log('[Supabase] Starting initialization...');
+        console.log('[Supabase] window.supabase available:', !!window.supabase);
+        console.log('[Supabase] createClient available:', typeof window.supabase?.createClient);
+
         for (let attempt = 1; attempt <= 3; attempt++) {
             try {
+                console.log(`[Supabase] Attempt ${attempt}: Fetching /api/config...`);
                 const response = await fetch('/api/config');
+                console.log(`[Supabase] Attempt ${attempt}: Response status:`, response.status, response.statusText);
+
                 if (!response.ok) {
                     throw new Error(`Configuration endpoint returned status ${response.status}`);
                 }
+
                 const config = await response.json();
+                console.log(`[Supabase] Attempt ${attempt}: Config received:`, {
+                    hasUrl: !!config.supabaseUrl,
+                    hasKey: !!config.supabasePublishableKey,
+                    urlPrefix: config.supabaseUrl?.substring(0, 30),
+                    keyPrefix: config.supabasePublishableKey?.substring(0, 20)
+                });
+
                 if (!config.supabaseUrl) {
                     throw new Error('Missing supabaseUrl in server configuration');
                 }
@@ -54,14 +69,48 @@ const Store = (() => {
                 if (!window.supabase?.createClient) {
                     throw new Error('Supabase client library is not loaded. Please check your internet connection and refresh.');
                 }
+
+                console.log(`[Supabase] Attempt ${attempt}: Creating Supabase client...`);
+                console.log(`[Supabase] Attempt ${attempt}: URL:`, config.supabaseUrl);
+                console.log(`[Supabase] Attempt ${attempt}: Key prefix:`, config.supabasePublishableKey?.substring(0, 20) + '...');
+
                 supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey);
+                console.log('[Supabase] ✓ Client created successfully:', !!supabaseClient);
+
+                if (!supabaseClient) {
+                    throw new Error('createClient returned null or undefined');
+                }
+
+                console.log('[Supabase] ✓ Initialization complete');
                 return;
             } catch (error) {
-                console.error(`Supabase initialization attempt ${attempt} failed:`, error);
+                console.error(`[Supabase] Attempt ${attempt} failed:`, error);
+                console.error(`[Supabase] Attempt ${attempt} error stack:`, error.stack);
+
                 if (attempt < 3) {
-                    await new Promise(r => setTimeout(r, 1000 * attempt));
+                    const delay = 1000 * attempt;
+                    console.log(`[Supabase] Retrying in ${delay}ms...`);
+                    await new Promise(r => setTimeout(r, delay));
                 } else {
-                    throw new Error(`Unable to initialize Supabase after 3 attempts: ${error.message}`);
+                    const errorMsg = `Unable to initialize Supabase after 3 attempts: ${error.message}`;
+                    console.error('[Supabase] ✗', errorMsg);
+
+                    const errDiv = document.createElement('div');
+                    errDiv.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:20px 30px;background:#fde8e8;color:#991b1b;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);z-index:9999;max-width:90vw;font-family:system-ui,sans-serif;';
+                    errDiv.innerHTML = `
+                        <strong style="font-size:1.1rem;">⚠️ Configuration Error</strong>
+                        <p style="margin:10px 0 0 0;font-size:0.9rem;line-height:1.5;">${errorMsg}</p>
+                        <p style="margin:10px 0 0 0;font-size:0.85rem;opacity:0.9;">
+                            <strong>Debug info:</strong><br>
+                            • Supabase CDN loaded: ${!!window.supabase}<br>
+                            • createClient available: ${typeof window.supabase?.createClient}<br>
+                            • Check browser console (F12) for details
+                        </p>
+                        <button onclick="this.parentElement.remove()" style="margin-top:12px;padding:8px 16px;background:#991b1b;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;">Dismiss</button>
+                    `;
+                    document.body.appendChild(errDiv);
+
+                    throw new Error(errorMsg);
                 }
             }
         }
@@ -2311,13 +2360,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             userMessage += '<br><br><small>Please contact the site administrator.</small>';
         }
         const errDiv = document.createElement('div');
-        errDiv.style.cssText = 'padding:20px;background:#fde8e8;color:#991b1b;margin:20px;border-radius:8px;max-width:600px;';
-        errDiv.innerHTML = userMessage;
-        const appRoot = document.getElementById('appRoot');
-        if (appRoot) {
-            appRoot.insertBefore(errDiv, appRoot.firstChild);
-        }
+        errDiv.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:20px 30px;background:#fde8e8;color:#991b1b;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);z-index:9999;max-width:90vw;font-family:system-ui,sans-serif;';
+        errDiv.innerHTML = userMessage + '<br><br><small>Open browser DevTools Console (F12) to see detailed debug logs.</small>';
+        document.body.appendChild(errDiv);
     }
+
+    const state = Store.getState();
+    console.log('[App] Store initialized. Supabase client ready:', !!state.user || true);
+    console.log('[App] Current path:', window.location.hash || '/');
+    console.log('[App] Check /api/config at:', window.location.origin + '/api/config');
     Router.init();
     bindEvents();
 
