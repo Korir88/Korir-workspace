@@ -75,6 +75,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        if (!window.supabase) {
+            console.warn('Primary Supabase CDN failed, loading fallback...');
+            var fallback = document.createElement('script');
+            fallback.src = 'https://unpkg.com/@supabase/supabase-js@2/dist/umd/iife.min.js';
+            fallback.onerror = function() {
+                console.error('Failed to load Supabase from fallback CDN');
+                var errDiv = document.createElement('div');
+                errDiv.style.cssText = 'padding:20px;background:#fde8e8;color:#991b1b;margin:20px;border-radius:8px;';
+                errDiv.innerHTML = '<strong>Configuration Error</strong><br>Unable to load the authentication service. Please check your internet connection and refresh the page.';
+                document.body.insertBefore(errDiv, document.body.firstChild);
+            };
+            document.head.appendChild(fallback);
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

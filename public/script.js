@@ -33,18 +33,38 @@ const Store = (() => {
     };
 
     const getClient = () => {
-        if (!supabaseClient) throw new Error('Supabase is not configured. Please contact the site administrator.');
+        if (!supabaseClient) throw new Error('Supabase client is not initialized. The configuration could not be loaded.');
         return supabaseClient;
     };
 
     const initializeSupabase = async () => {
-        const response = await fetch('/api/config');
-        const config = await response.json();
-        if (!response.ok || !config.supabaseUrl || !config.supabasePublishableKey) {
-            throw new Error(config.error || 'Supabase is not configured.');
+        for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+                const response = await fetch('/api/config');
+                if (!response.ok) {
+                    throw new Error(`Configuration endpoint returned status ${response.status}`);
+                }
+                const config = await response.json();
+                if (!config.supabaseUrl) {
+                    throw new Error('Missing supabaseUrl in server configuration');
+                }
+                if (!config.supabasePublishableKey) {
+                    throw new Error('Missing supabasePublishableKey in server configuration');
+                }
+                if (!window.supabase?.createClient) {
+                    throw new Error('Supabase client library is not loaded. Please check your internet connection and refresh.');
+                }
+                supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey);
+                return;
+            } catch (error) {
+                console.error(`Supabase initialization attempt ${attempt} failed:`, error);
+                if (attempt < 3) {
+                    await new Promise(r => setTimeout(r, 1000 * attempt));
+                } else {
+                    throw new Error(`Unable to initialize Supabase after 3 attempts: ${error.message}`);
+                }
+            }
         }
-        if (!window.supabase?.createClient) throw new Error('Unable to load the authentication service.');
-        supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey);
     };
 
     let state = {
@@ -2283,7 +2303,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         await Store.init();
     } catch (error) {
         console.error('Unable to initialize Supabase:', error);
-        Toast.error('Authentication is temporarily unavailable. Please try again later.', 'Configuration required');
+        const errorMsg = error.message || 'Authentication is temporarily unavailable.';
+        let userMessage = '<strong>Configuration Error</strong><br>' + errorMsg;
+        if (errorMsg.includes('not loaded') || errorMsg.includes('network') || errorMsg.includes('fetch')) {
+            userMessage += '<br><br><small>Please check your internet connection and refresh the page.</small>';
+        } else if (errorMsg.includes('Missing') || errorMsg.includes('configuration')) {
+            userMessage += '<br><br><small>Please contact the site administrator.</small>';
+        }
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'padding:20px;background:#fde8e8;color:#991b1b;margin:20px;border-radius:8px;max-width:600px;';
+        errDiv.innerHTML = userMessage;
+        const appRoot = document.getElementById('appRoot');
+        if (appRoot) {
+            appRoot.insertBefore(errDiv, appRoot.firstChild);
+        }
     }
     Router.init();
     bindEvents();
