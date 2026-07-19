@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Korir Digital Services — SPA Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ============================================================
+    TOP NAVIGATION (SPA)
+    ============================================================ -->
+    <nav class="spa-nav" id="spaNav">
+        <div class="container">
+            <a class="logo" href="#" data-nav="home">
+                <span>Korir</span>
+            </a>
+
+            <ul class="nav-links-spa" id="navLinks">
+                <li><a href="#" data-nav="home" class="active">Home</a></li>
+                <li><a href="#" data-nav="/services">Services</a></li>
+                <li><a href="#" data-nav="dashboard">Dashboard</a></li>
+                <li><a href="#" data-nav="projects">Projects</a></li>
+                <li><a href="#" data-nav="pricing">Pricing</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <div id="navAuthButtons">
+                    <a href="#" data-nav="login" class="btn btn-sm btn-outline">Log In</a>
+                    <a href="#" data-nav="register" class="btn btn-sm btn-primary">Sign Up</a>
+                </div>
+                <div id="navUserMenu" class="hidden" style="display:flex;align-items:center;gap:10px;">
+                    <span id="navUserName" style="font-size:0.85rem;font-weight:500;"></span>
+                    <div class="avatar" id="navAvatar" data-nav="profile">E</div>
+                    <button class="btn btn-sm btn-outline" id="logoutBtn" style="padding:4px 12px;font-size:0.75rem;">Logout</button>
+                </div>
+                <button class="mobile-toggle-spa" id="mobileToggleSpa" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    PAGE CONTAINER
+    ============================================================ -->
+    <main class="page-container" id="appRoot">
+        <div id="pageContent"></div>
+    </main>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer style="border-top:1px solid var(--border);padding:24px 0;background:var(--surface);margin-top:12px;">
+        <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <span style="font-size:0.85rem;color:var(--text-muted);">&copy; 2026 Korir Digital. All rights reserved.</span>
+            <div style="display:flex;gap:16px;">
+                <a href="#" style="color:var(--text-muted);font-size:0.85rem;"><i class="fab fa-github"></i></a>
+                <a href="#" style="color:var(--text-muted);font-size:0.85rem;"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" style="color:var(--text-muted);font-size:0.85rem;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color:var(--text-muted);font-size:0.85rem;"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
