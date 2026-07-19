@@ -58,7 +58,6 @@ pnpm-debug.log*
 # Node.js (Future Use)
 # ------------------------------------------------------
 node_modules/
-package-lock.json
 npm-shrinkwrap.json
 
 # Yarn
