@@ -306,11 +306,15 @@ const Store = (() => {
         async addProject(project) {
             try {
                 await delay(300);
+                const status = project.status || 'active';
                 const newProj = {
                     ...project,
                     id: Date.now(),
-                    status: project.status || 'active',
-                    progress: Number.isFinite(Number(project.progress)) ? Number(project.progress) : 10,
+                    status,
+                    // A completed project is always fully complete, regardless of
+                    // an imported or previously supplied progress value.
+                    progress: status === 'completed' ? 100 :
+                        (Number.isFinite(Number(project.progress)) ? Number(project.progress) : 10),
                     milestones: Array.isArray(project.milestones) ? project.milestones : [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
@@ -331,7 +335,12 @@ const Store = (() => {
             try {
                 await delay(250);
                 const projects = (state.projects || []).map(p =>
-                    p.id === id ? { ...p, status, updatedAt: new Date().toISOString() } : p
+                    p.id === id ? {
+                        ...p,
+                        status,
+                        progress: status === 'completed' ? 100 : p.progress,
+                        updatedAt: new Date().toISOString()
+                    } : p
                 );
                 setState({ projects });
                 await actions.refreshDashboard();
@@ -343,9 +352,13 @@ const Store = (() => {
 
         async updateProject(id, updates) {
             try {
-                const projects = (state.projects || []).map(project =>
-                    project.id === id ? { ...project, ...updates, updatedAt: new Date().toISOString() } : project
-                );
+                const projects = (state.projects || []).map(project => {
+                    if (project.id !== id) return project;
+                    const updatedProject = { ...project, ...updates, updatedAt: new Date().toISOString() };
+                    return updatedProject.status === 'completed'
+                        ? { ...updatedProject, progress: 100 }
+                        : updatedProject;
+                });
                 setState({ projects });
                 await actions.refreshDashboard();
                 return { success: true };
@@ -697,6 +710,10 @@ const Components = {
     },
 
     projectCard({ id, title, type, desc, status, icon, progress = 0, timeline }) {
+        // Keep older saved projects accurate in the UI even before they are edited.
+        const displayedProgress = status === 'completed'
+            ? 100
+            : Math.min(100, Math.max(0, Number(progress) || 0));
         const statusBadge = status === 'active' ?
             '<span class="badge badge-success">Active</span>' :
             '<span class="badge">Completed</span>';
@@ -713,9 +730,9 @@ const Components = {
                         <span><i class="fas fa-tag"></i> ${type || 'Project'}</span>
                         ${timeline ? `<span><i class="fas fa-calendar"></i> ${timeline}</span>` : ''}
                     </div>
-                    <div class="project-progress" aria-label="${progress}% complete">
-                        <div class="project-progress-label"><span>Project progress</span><strong>${progress}%</strong></div>
-                        <div class="progress-track"><span style="width:${Math.min(100, Math.max(0, progress))}%"></span></div>
+                    <div class="project-progress" aria-label="${displayedProgress}% complete">
+                        <div class="project-progress-label"><span>Project progress</span><strong>${displayedProgress}%</strong></div>
+                        <div class="progress-track"><span style="width:${displayedProgress}%"></span></div>
                     </div>
                     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
                         <button class="btn btn-sm btn-primary project-view" data-id="${id}"><i class="fas fa-table"></i> View sheet</button>
