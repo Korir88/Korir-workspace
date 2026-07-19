@@ -73,15 +73,15 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/iife.min.js"
-            onerror="this.onerror=null; this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/iife.min.js';"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.js"
+            onerror="this.onerror=null; this.src='https://unpkg.com/@supabase/supabase-js@2.110.7/dist/umd/supabase.js';"
             onload="console.log('[CDN] Supabase loaded from cdn.jsdelivr.net')"></script>
     <script>
         if (!window.supabase) {
             console.warn('[CDN] Primary CDN failed, trying fallback...');
             var fallback = document.createElement('script');
-            fallback.src = 'https://unpkg.com/@supabase/supabase-js@2/dist/umd/iife.min.js';
+            fallback.src = 'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.110.7/supabase.min.js';
             fallback.onerror = function() {
                 console.error('[CDN] All CDN sources failed');
                 var errDiv = document.createElement('div');
@@ -90,11 +90,11 @@
                 document.body.appendChild(errDiv);
             };
             fallback.onload = function() {
-                console.log('[CDN] Supabase loaded from unpkg.com fallback');
+                console.log('[CDN] Supabase loaded from fallback CDN');
             };
             document.head.appendChild(fallback);
         }
     </script>
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>
