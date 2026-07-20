@@ -268,3 +268,4 @@ IT Support Specialist • Full-Stack Developer • AI & Cloud Enthusiast
 # ⭐ Support
 
 If you find this project useful, please consider giving it a **⭐ Star** on GitHub. Your support helps improve the project and encourages future development.
+# Indulge-Essentials-Store
